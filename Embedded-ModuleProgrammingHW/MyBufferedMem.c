@@ -32,8 +32,10 @@ ssize_t chr_write(struct file * filep, const char * buf, size_t count, loff_t * 
 	char val;
 	int length = 0;
 
-	while(count > 0) {
-		if(kfifo_is_full(&fifo)) {
+	while(count > 0)
+	{
+		if(kfifo_is_full(&fifo))
+		{
 			kfifo_out(&fifo, &val, sizeof(val));
 			printk("fifo is full, out value: %c",val);
 		}
@@ -67,7 +69,8 @@ ssize_t chr_read(struct file * filep, char * buf, size_t count, loff_t * f_pos)
 	}
 	
 	retval = length;
-	while(length > 0 && !kfifo_is_empty(&fifo)) {
+	while(length > 0 && !kfifo_is_empty(&fifo))
+	{
 		kfifo_out(&fifo, &val, sizeof(val));
 		put_user(val, buf);
 		buf++;
@@ -109,9 +112,8 @@ long chr_ioctl(struct file * filep, unsigned int cmd, unsigned long arg)
 		{
 
 			if (kfifo_is_full(&fifo))
-			{
 				kfifo_out(&fifo, &val, sizeof(char));
-			}
+			
 			val = tmp[j];
 			kfifo_in(&fifo, &val, sizeof(char));
 			j++;
@@ -121,15 +123,13 @@ long chr_ioctl(struct file * filep, unsigned int cmd, unsigned long arg)
 		kfree(tmp);
 	
 		if(ret)
-		{
 			printk(KERN_ERR "error kfifo_alloc\n");
-		}
 		break;
 		}
 
 		case 1: M = arg; break;
 	}
-	printk("iotcl N:%d M:%d\n", N, M);
+	printk("ioctl N:%d M:%d\n", N, M);
 	return 0;
 }
 
@@ -161,9 +161,8 @@ int chr_init(void)
 
 	ret = kfifo_alloc(&fifo, N, GFP_KERNEL);
 	if(ret)
-	{
 		printk(KERN_ERR "error kfifo_alloc\n");
-	}
+	
 	printk("Major Number : %d\n", registration);
 	return 0;
 }
